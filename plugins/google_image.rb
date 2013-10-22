@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+# Idea:
+#   https://github.com/github/hubot/blob/master/src/scripts/google-images.coffee
 
 IMAGE_SEARCH_URL='http://ajax.googleapis.com/ajax/services/search/images'
 
