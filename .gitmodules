@@ -1,0 +1,3 @@
+[submodule "jabbot"]
+	path = jabbot
+	url = git://github.com/badboy/jabbot.git

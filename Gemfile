@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+gem 'xmpp4r', git: 'https://github.com/xmpp4r/xmpp4r'
+gem 'eventmachine'
+gem 'nokogiri'
+gem 'redis'
+gem 'redis-namespace'
+gem 'resque'
+gem 'faraday'
+gem 'faraday_middleware'
