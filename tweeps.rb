@@ -5,11 +5,7 @@ HERE = File.expand_path(File.dirname(__FILE__))
 
 require 'bundler/setup'
 require 'jabbot'
-require 'net/http'
-require 'net/https'
-require 'uri'
 require 'time'
-require 'cgi'
 require 'redis'
 require 'redis-namespace'
 
