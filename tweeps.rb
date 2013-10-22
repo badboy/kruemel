@@ -40,4 +40,5 @@ plugin :help
 plugin :gem
 plugin :imdb
 plugin :roulette
+plugin :google_image
 plugins_done
