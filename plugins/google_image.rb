@@ -38,7 +38,7 @@ hear /(?:image|img)(?: me)? (.+)/ do |message, params|
   end
 end
 
-hear /(?:animate)(?: me)? (.+)/ do |message, params|
+hear /(?:animate|gif)(?: me)? (.+)/ do |message, params|
   log "!anmiate", message, params
   query = params[0]
 
