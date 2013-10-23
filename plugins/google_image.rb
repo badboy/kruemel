@@ -21,9 +21,11 @@ def image_me query, animated=false, &cb
     if images
       images = images['results']
       image  = images.sample["unescapedUrl"]
-
-      cb.call(image)
+    else
+      image = "No image"
     end
+
+    cb.call(image)
   end
 end
 
