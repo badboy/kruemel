@@ -9,9 +9,8 @@ end
 
 hear(/help(?:\s(.+))?/, :prefix => /(?:#{bot.nick}[,:]? |!|>)/) do |message, params|
   log('!help', message, params)
-
-  if params[1]
-    command = params[1].downcase
+  if params[0]
+    command = params[0].downcase
     name, phrase, func = $descriptions.find{|(name, p, f)|
       command == name
     }
@@ -29,7 +28,7 @@ hear(/help(?:\s(.+))?/, :prefix => /(?:#{bot.nick}[,:]? |!|>)/) do |message, par
     msg << descs*', '
   end
 
-  if params[0] == '>'
+  if message.text[0] == '>'
     post msg.chomp => message.user
   else
     post msg.chomp, message
