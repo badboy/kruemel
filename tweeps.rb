@@ -6,8 +6,6 @@ HERE = File.expand_path(File.dirname(__FILE__))
 require 'bundler/setup'
 require 'jabbot'
 require 'time'
-require 'redis'
-require 'redis-namespace'
 
 require_relative './lib/http_helper'
 require_relative './lib/redis_helper'

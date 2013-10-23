@@ -1,3 +1,6 @@
+require 'redis'
+require 'redis-namespace'
+
 def connect_redis
   $raw_redis ||= Redis.new
   $redis ||= Redis::Namespace.new :kruemel, :redis => $raw_redis
