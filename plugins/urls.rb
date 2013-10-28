@@ -5,7 +5,6 @@ require 'nokogiri'
 DEFAULT_ENCODINGS      = %w[ utf-8 utf8 UTF8 UTF-8 ]
 BLOCKED_HOSTS          = %w[ localhost 127.0.0.1 ]
 TITLE_MAX_LENGTH       = 100
-ALLOWED_CHARS_IN_TITLE = /[^-_;:?=()!"$%&.\/\s\w\d\[\]{}+#',><\|]/u
 
 # 0.5 MB max.
 LINK_MAX_SIZE = 512 * 1024
@@ -41,8 +40,6 @@ def extract_title doc, send_encoding
 
   if send_encoding && !DEFAULT_ENCODINGS.include?(send_encoding)
     title = correctly_encode(title)
-  elsif ind = (title =~ ALLOWED_CHARS_IN_TITLE)
-    title = title[0...ind] + '...'
   end
 
   title
