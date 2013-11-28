@@ -5,6 +5,9 @@ require 'nokogiri'
 DEFAULT_ENCODINGS      = %w[ utf-8 utf8 UTF8 UTF-8 ]
 BLOCKED_HOSTS          = %w[ localhost 127.0.0.1 ]
 TITLE_MAX_LENGTH       = 100
+GET_ONLY = %w[ news.ycombinator.com
+               www.amazon.de www.amazon.com amazon.de amazon.com
+             ]
 
 # 0.5 MB max.
 LINK_MAX_SIZE = 512 * 1024
@@ -45,6 +48,37 @@ def extract_title doc, send_encoding
   title
 end
 
+def get_request uri, send_encoding=nil
+  request(uri) do |req|
+    doc = Nokogiri::HTML req.body
+
+    next unless doc
+
+    send_encoding = choose_encoding doc unless send_encoding
+
+    title = extract_title doc, send_encoding
+    if title
+      post "Titel: #{title} (at #{uri.host} )"
+    else
+      post "Titel: <empty> (at #{uri.host} )"
+    end
+  end
+end
+
+def head_request uri
+  request(uri, :head) do |req|
+    size = req.header['content-length'].to_i
+
+    next if size > LINK_MAX_SIZE
+    next if req.header['content-type'] !~ /text/i
+
+    # HTTP Content-Type charset is preferred
+    send_encoding = $1 if req.header['content-type'] =~ /^.+charset=(.+)/i
+
+    get_request uri, send_encoding
+  end
+end
+
 message(/(https?:\/\/\S+)/) do |message, params|
   begin
     next if message.text =~ /\A\s*!\w+/
@@ -62,31 +96,12 @@ message(/(https?:\/\/\S+)/) do |message, params|
       post msg ? msg : TWITTER_FAIL
     else
       # Only get the HTTP headers.
-      request(uri, :head) do |req|
-        size = req.header['content-length'].to_i
 
-        next if size > LINK_MAX_SIZE
-        next if req.header['content-type'] !~ /text/i
-
-        # HTTP Content-Type charset is preferred
-        if req.header['content-type'] =~ /^.+charset=(.+)/i
-          send_encoding = $1
-        end
-
-        request(uri) do |req|
-          doc = Nokogiri::HTML req.body
-
-          next unless doc
-
-          send_encoding = choose_encoding doc unless send_encoding
-
-          title = extract_title doc, send_encoding
-          if title
-            post "Titel: #{title} (at #{uri.host} )"
-          else
-            post "Titel: <empty> (at #{uri.host} )"
-          end
-        end
+      if GET_ONLY.include?(uri.host)
+        get_request(uri)
+      else
+        # Only get the HTTP headers.
+        head_request(uri)
       end
     end
 
