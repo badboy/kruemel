@@ -38,12 +38,15 @@ def extract_title doc, send_encoding
   title = doc.css("title")
   return if !title || title.empty?
 
-  title = title[0].content.strip.gsub(/\r/, '').gsub(/\n/, ' ').gsub(/\s+/, ' ')
-  title = title[0, TITLE_MAX_LENGTH] + '...' if title.length > TITLE_MAX_LENGTH
+  title = title[0].content
 
   if send_encoding && !DEFAULT_ENCODINGS.include?(send_encoding)
+    title.force_encoding(send_encoding)
     title = correctly_encode(title)
   end
+
+  title = title.strip.gsub(/\r/, '').gsub(/\n/, ' ').gsub(/\s+/, ' ')
+  title = title[0, TITLE_MAX_LENGTH] + '...' if title.length > TITLE_MAX_LENGTH
 
   title
 end
@@ -54,7 +57,13 @@ def get_request uri, send_encoding=nil
 
     next unless doc
 
-    send_encoding = choose_encoding doc unless send_encoding
+    if !send_encoding
+      if req.header['content-type'] =~ /^.+charset=(.+)/i
+        send_encoding = $1
+      else
+        send_encoding = choose_encoding doc
+      end
+    end
 
     title = extract_title doc, send_encoding
     if title
