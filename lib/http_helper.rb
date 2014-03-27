@@ -27,7 +27,7 @@ def fetch(uri_str, verb=:get, limit=10)
     when :get
       http.request_get(uri_path, {'User-Agent' => USERAGENT})
     when :head
-      http.request_head(uri_path, {'User-Agent' => USERAGENT})
+      http.request_head(uri_path, {'User-Agent' => USERAGENT, 'Connection' => 'close'})
     when :post
       http.request_post(uri_path, {'User-Agent' => USERAGENT})
     else
